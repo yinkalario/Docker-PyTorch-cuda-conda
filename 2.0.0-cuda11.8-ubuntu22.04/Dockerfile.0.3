@@ -1,0 +1,40 @@
+FROM 2.0.0-cuda11.8-ubuntu22.04:0.2
+
+## other packages
+RUN apt-get -y update
+RUN apt-get install -y --no-install-recommends \
+	curl
+RUN apt-get -y autoremove && apt-get -y autoclean
+
+## Conda
+# Use the above args during building https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG CONDA_VER=latest
+ARG OS_TYPE=x86_64
+# Install miniconda to /miniconda
+RUN curl -LO "http://repo.continuum.io/miniconda/Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh"
+RUN bash Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh -b -p /miniconda 
+RUN rm Miniconda3-${CONDA_VER}-Linux-${OS_TYPE}.sh
+ENV PATH=/miniconda/bin:${PATH}
+RUN conda update -y conda
+RUN conda init bash
+RUN bash -c "source /root/.bashrc"
+
+# # Install conda environment
+# RUN conda create -n py39torch200 python=3.9 -y
+# RUN conda activate py39torch200
+
+# RUN conda install -c anaconda pandas h5py ipython pyyaml pylint pillow setuptools -y
+# RUN conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+# RUN conda install -c conda-forge matplotlib librosa pudb tqdm ruamel.yaml jupyterlab sox cupy jupyterlab onnxruntime protobuf tensorboard -y
+# RUN conda install -c omnia termcolor -y
+# RUN pip install pesq
+# RUN pip install pystoi
+# RUN pip install PySoundFile
+# RUN pip install gpustat
+# RUN pip install pysndfx
+# RUN pip install thop
+# RUN pip install torchstat
+# RUN pip install ptflops
+# RUN pip install webrtcvad
+# RUN pip install nnAudio
+# RUN pip install learn2learn
